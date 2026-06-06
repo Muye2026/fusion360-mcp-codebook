@@ -80,15 +80,15 @@ create_cube(10, 10, 10)
 
 | Category | Total | Passed | Failed | Untested |
 |----------|-------|--------|--------|----------|
-| Basic shapes | 6 | 4 | 0 | 2 (cone, torus) |
+| Basic shapes | 6 | 6 | 0 | 0 |
 | Features | 10 | 10 | 0 | 0 |
 | Surfaces | 6 | 6 | 0 | 0 |
-| Transforms | 4 | 3 | 0 | 1 (rotate_body) |
+| Transforms | 4 | 4 | 0 | 0 |
 | Assembly | 3 | 3 | 0 | 0 |
-| Export | 5 | 4 | 0 | 1 (export_iges) |
-| **Total** | **34** | **30** | **0** | **4** |
+| Export | 5 | 5 | 0 | 0 |
+| **Total** | **34** | **34** | **0** | **0** |
 
-> **Assembly note**: `addNewComponent` requires Matrix3D (not None), `ContactSets` is on `design` not `rootComp`, `JointGeometry` uses `createByPoint()` not `create()`.
+> **Torus note**: Use SweepFeatures (NOT RevolveFeatures) to create torus — revolve fails with ASM_PATH_TANGENT error.
 
 ## Usage with AI
 

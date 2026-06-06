@@ -18,8 +18,8 @@ Each entry links to the source file and shows test status.
 | create_cylinder | [create_cylinder.py](basic_shapes/create_cylinder.py) | ✓ PASSED | radius=5, height=20 |
 | create_sphere | [create_sphere.py](basic_shapes/create_sphere.py) | ✓ PASSED | Via RevolveFeature (SphereFeatures has no add) |
 | create_loft | [create_loft.py](basic_shapes/create_loft.py) | ✓ PASSED | Two circular profiles with offset plane |
-| create_cone | — | ? UNTESTED | |
-| create_torus | — | ? UNTESTED | |
+| create_cone | [create_cone.py](basic_shapes/create_cone.py) | ✓ PASSED | Revolve triangle profile 360° around Y axis |
+| create_torus | [create_torus.py](basic_shapes/create_torus.py) | ✓ PASSED | Sweep circular profile along circular path (NOT revolve — ASM_PATH_TANGENT) |
 
 ---
 
@@ -58,7 +58,7 @@ Each entry links to the source file and shows test status.
 | Function | File | Status | Notes |
 |----------|------|--------|-------|
 | mirror_body | [mirror_bodies.py](features/mirror_bodies.py) | ✓ PASSED | Mirror body across YZ plane, createInput(entities, plane) |
-| rotate_body | — | ? UNTESTED | MoveFeatures (rotate via Matrix3D rotation) |
+| rotate_body | [rotate_body.py](features/rotate_body.py) | ✓ PASSED | MoveFeatures with Matrix3D.setToRotation(angleRad, axis, origin) |
 | circular_pattern | [circular_pattern.py](features/circular_pattern.py) | ✓ PASSED | 4 instances, 360° around Z axis, pattern body not feature |
 | rectangular_pattern | [rectangular_pattern.py](features/rectangular_pattern.py) | ✓ PASSED | 2x2 pattern, 20mm spacing, createInput needs PatternDistanceType |
 
@@ -82,7 +82,7 @@ Each entry links to the source file and shows test status.
 | export_step | [export_step.py](export/export_step.py) | ✓ PASSED | Export component to STEP, createSTEPExportOptions(filename, component) |
 | export_stl | [export_stl.py](export/export_stl.py) | ✓ PASSED | Export body to STL, createSTLExportOptions(**body**, filename) — pass BRepBody not Component |
 | mass_properties | [mass_properties.py](export/mass_properties.py) | ✓ PASSED | Get mass/volume/area/density, body.physicalProperties |
-| export_iges | — | ? UNTESTED | exportManager.createIGESExportOptions |
+| export_iges | [export_iges.py](export/export_iges.py) | ✓ PASSED | createIGESExportOptions(filepath, component), same pattern as STEP |
 
 ---
 
@@ -129,6 +129,7 @@ Each entry links to the source file and shows test status.
 | Assembly | `JointGeometry.create(point, occ, keyPointType)` ❌ | `JointGeometry.createByPoint(BRepVertex)` — static method, not `create()` ✓ |
 | Assembly | `setAsRevoluteJointMotion(Vector3D)` ❌ | `setAsRevoluteJointMotion(JointDirections.ZAxisJointDirection)` — takes enum, not Vector3D ✓ |
 | Assembly | `rootComp.contactSets.add(ObjectCollection)` ❌ | `design.contactSets.add([occ1, occ2])` — on design not rootComp, takes Python list ✓ |
+| Torus | RevolveFeatures with circular profile ❌ | Use SweepFeatures (circular profile along circular path) — revolve fails with ASM_PATH_TANGENT ✓ |
 
 ---
 
