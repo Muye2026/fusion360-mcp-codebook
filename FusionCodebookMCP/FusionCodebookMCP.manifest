@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest SchemaVersion="1" ProductType="Managed" ProductVersion="1.0">
+  <Name>Fusion Codebook MCP</Name>
+  <Description>Domain-specific MCP Server for Fusion 360 with 34 tested tools for AI-driven CAD.</Description>
+  <CompanyName>Muye2026</CompanyName>
+  <ApperanceIcon>lib/autodesk.ico</ApperanceIcon>
+</ApplicationManifest>
