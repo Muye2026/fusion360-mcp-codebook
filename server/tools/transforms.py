@@ -7,7 +7,7 @@ and executes via FusionBridge.
 import math
 from pydantic import Field
 
-from server.main import mcp
+from server.app import mcp
 from server.bridge import bridge
 from server import config
 

@@ -6,7 +6,7 @@ and executes via FusionBridge.
 
 from pydantic import Field
 
-from server.main import mcp
+from server.app import mcp
 from server.bridge import bridge
 from server import config
 

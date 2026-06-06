@@ -1,11 +1,12 @@
-"""Configuration for Fusion 360 MCP Codebook Server."""
+"""Configuration for Muye Fusion Gateway."""
 
 import os
 
-# Upstream frankhommers MCP Server (runs inside Fusion 360 as Add-in)
-UPSTREAM_URL = os.getenv("FUSION_UPSTREAM_URL", "http://127.0.0.1:8765/mcp")
+# Upstream FusionMCP bridge (runs inside Fusion 360 as Add-in)
+# FusionMCP uses HTTP POST JSON API (not MCP protocol)
+UPSTREAM_URL = os.getenv("FUSION_UPSTREAM_URL", "http://127.0.0.1:7432")
 
-# This server's configuration
+# This server's configuration (MCP Streamable HTTP)
 HOST = os.getenv("FUSION_SERVER_HOST", "0.0.0.0")
 PORT = int(os.getenv("FUSION_SERVER_PORT", "8000"))
 

@@ -6,7 +6,7 @@ and executes via FusionBridge.
 
 from pydantic import Field
 
-from server.main import mcp
+from server.app import mcp
 from server.bridge import bridge
 
 
@@ -125,20 +125,28 @@ app = adsk.core.Application.get()
 design = app.activeProduct
 rootComp = design.rootComponent
 
-body = rootComp.bRepBodies.item({body_index})
-if not body:
-    print("ERROR: Body not found at index {body_index}")
+bodies = rootComp.bRepBodies
+count = bodies.count
+print(f"Total bodies in design: {{count}}")
+
+if {body_index} >= count:
+    print(f"ERROR: Body index {body_index} out of range (count: {{count}})")
 else:
-    props = body.physicalProperties
-    if props:
-        print(f"Body: {body.name}")
-        print(f"Mass: {props.mass} kg")
-        print(f"Volume: {props.volume} cm3")
-        print(f"Area: {props.area} cm2")
-        print(f"Density: {props.density} kg/cm3")
-        center = props.centerOfMass
-        print(f"Center of Mass: ({center.x}, {center.y}, {center.z})")
+    target = bodies.item({body_index})
+    if target is None:
+        print("ERROR: Body at index {body_index} is None")
     else:
-        print("ERROR: Failed to get physical properties")
+        props = target.physicalProperties
+        if props:
+            result = f"Body: {{target.name}}\\n"
+            result += f"Mass: {{props.mass}} kg\\n"
+            result += f"Volume: {{props.volume}} cm3\\n"
+            result += f"Area: {{props.area}} cm2\\n"
+            result += f"Density: {{props.density}} kg/cm3\\n"
+            center = props.centerOfMass
+            result += f"CenterOfMass: ({{center.x}}, {{center.y}}, {{center.z}})"
+            print(result)
+        else:
+            print("ERROR: Failed to get physical properties")
 '''
     return await bridge.execute_python(code)
