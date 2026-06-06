@@ -58,7 +58,7 @@ Each entry links to the source file and shows test status.
 | Function | File | Status | Notes |
 |----------|------|--------|-------|
 | mirror_body | [mirror_bodies.py](features/mirror_bodies.py) | ✓ PASSED | Mirror body across YZ plane, createInput(entities, plane) |
-| rotate_body | — | ? UNTESTED | MoveFeatures (rotate via Matrix3D.setToRotation) |
+| rotate_body | — | ? UNTESTED | MoveFeatures (rotate via Matrix3D rotation) |
 | circular_pattern | [circular_pattern.py](features/circular_pattern.py) | ✓ PASSED | 4 instances, 360° around Z axis, pattern body not feature |
 | rectangular_pattern | [rectangular_pattern.py](features/rectangular_pattern.py) | ✓ PASSED | 2x2 pattern, 20mm spacing, createInput needs PatternDistanceType |
 
@@ -68,9 +68,9 @@ Each entry links to the source file and shows test status.
 
 | Function | File | Status | Notes |
 |----------|------|--------|-------|
-| create_component | — | ? UNTESTED | `occurrences.addNewComponent` — requires blank assembly document |
-| joint_revolve | — | ? UNTESTED | `Joints.add` with JointGeometry |
-| contact_set | — | ? UNTESTED | `ContactSets.add` |
+| create_component | [create_component.py](assembly/create_component.py) | ✓ PASSED | `addNewComponent(transform)` — requires Matrix3D, not None |
+| joint_revolve | [joint_revolve.py](assembly/joint_revolve.py) | ✓ PASSED | `JointGeometry.createByPoint(vertex)`, `setAsRevoluteJointMotion(JointDirections)` |
+| contact_set | [contact_set.py](assembly/contact_set.py) | ✓ PASSED | `design.contactSets.add([occ1, occ2])` — on design, not rootComp; takes list, not ObjectCollection |
 
 ---
 
@@ -125,7 +125,10 @@ Each entry links to the source file and shows test status.
 | Move Body | `matrix.setToTranslation(vector)` ❌ | `matrix.translation = vector` (property assignment, not method call) ✓ |
 | Delete Face | `DeleteFaceFeatures.add(face)` fails if gap not fillable ❌ | Use `SurfaceDeleteFaceFeatures.add(face)` — converts solid to open surface ✓ |
 | STL Export | Pass `rootComp` (Component) to `createSTLExportOptions` ❌ | Pass `BRepBody` object: `rootComp.bRepBodies.item(0)` ✓ |
-| Assembly | `occurrences.addNewComponent()` in existing feature doc ❌ | Must use a new blank assembly document ✓ |
+| Assembly | `occurrences.addNewComponent(None)` ❌ | `addNewComponent(Matrix3D.create())` — requires Matrix3D, not None ✓ |
+| Assembly | `JointGeometry.create(point, occ, keyPointType)` ❌ | `JointGeometry.createByPoint(BRepVertex)` — static method, not `create()` ✓ |
+| Assembly | `setAsRevoluteJointMotion(Vector3D)` ❌ | `setAsRevoluteJointMotion(JointDirections.ZAxisJointDirection)` — takes enum, not Vector3D ✓ |
+| Assembly | `rootComp.contactSets.add(ObjectCollection)` ❌ | `design.contactSets.add([occ1, occ2])` — on design not rootComp, takes Python list ✓ |
 
 ---
 

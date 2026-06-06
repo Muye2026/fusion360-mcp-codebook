@@ -35,7 +35,6 @@ fusion360-mcp-codebook/
 ├── transforms/        # Transforms: move, rotate, mirror, pattern (circular/rectangular)
 ├── assembly/          # Assembly: components, joints, contacts
 ├── export/            # Export: STEP, STL, IGES, screenshot
-├── tests/             # Test suite & validation results
 ├── LIBRARY.md         # Quick reference index of all functions
 └── README.md          # This file
 ```
@@ -83,13 +82,13 @@ create_cube(10, 10, 10)
 |----------|-------|--------|--------|----------|
 | Basic shapes | 6 | 4 | 0 | 2 (cone, torus) |
 | Features | 10 | 10 | 0 | 0 |
-| Surfaces | 7 | 6 | 0 | 0 (sweep counted here) |
+| Surfaces | 6 | 6 | 0 | 0 |
 | Transforms | 4 | 3 | 0 | 1 (rotate_body) |
-| Assembly | 3 | 0 | 0 | 3 (blocked: requires blank assembly doc) |
+| Assembly | 3 | 3 | 0 | 0 |
 | Export | 5 | 4 | 0 | 1 (export_iges) |
-| **Total** | **35** | **27** | **0** | **7** |
+| **Total** | **34** | **30** | **0** | **4** |
 
-> **Assembly note**: Component creation (`occurrences.addNewComponent`) can only run in a new blank assembly document. Tests 6.1–6.2 are deferred, not blocked by API limitations.
+> **Assembly note**: `addNewComponent` requires Matrix3D (not None), `ContactSets` is on `design` not `rootComp`, `JointGeometry` uses `createByPoint()` not `create()`.
 
 ## Usage with AI
 
