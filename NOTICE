@@ -1,0 +1,15 @@
+Brepwright Notices
+
+Brepwright is not affiliated with, endorsed by, or sponsored by Autodesk.
+
+Autodesk, Fusion, and Fusion 360 are trademarks of Autodesk, Inc.
+
+This project includes an adapted standard-library Streamable HTTP MCP runtime
+inspired by frankhommers/autodesk-fusion-mcp, which is distributed under the
+MIT License. See:
+
+https://github.com/frankhommers/autodesk-fusion-mcp
+
+The project also references Autodesk Fusion API documentation by link. Autodesk
+documentation content is not redistributed in this repository beyond short,
+project-specific summaries.

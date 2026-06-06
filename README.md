@@ -1,111 +1,140 @@
-# Fusion 360 MCP Codebook
+# Brepwright
 
-> A curated, tested Python code library for Fusion 360 MCP operations.
-> Works with any Fusion 360 MCP Server (frankhommers, AuraFriday, Autodesk official).
+Validated AI CAD workflows for Autodesk Fusion via MCP.
 
-## Why this exists
+Brepwright is a local Autodesk Fusion add-in that exposes a small, tested MCP tool surface for AI agents. It focuses on reliable part creation, inspection, screenshots, exports, and repeatable design-pack delivery rather than competing to expose every Fusion command.
 
-When AI writes Fusion 360 API code, it often gets the API signatures wrong — wrong parameter types, wrong method calls, wrong object construction patterns. This library provides **tested, ready-to-use** code snippets that AI can directly execute via MCP.
+## Positioning
+
+Brepwright is:
+
+- Codebook-backed: core tool patterns are grounded in scripts that were validated against Fusion.
+- Workflow-first: high-level tools create practical parts such as mounting plates, enclosure shells, and brackets.
+- Verification-first: inspection, screenshots, mass properties, and export checks are part of the normal loop.
+- Small by design: the public surface favors reliable operations over a long list of thin API wrappers.
+
+Brepwright is not:
+
+- An Autodesk official project.
+- A replacement for Autodesk's built-in local Fusion MCP endpoint.
+- A generic "maximum number of tools" Fusion MCP server.
+- A wrapper around `fozzfut/FusionMCP` or the archived Gateway experiment.
+
+## Why This Exists
+
+AI agents can already connect to Fusion through several MCP servers. The harder problem is making agents produce stable mechanical geometry without guessing Fusion API signatures or skipping verification. Brepwright treats the tested Codebook as the source of truth and wraps it in a product-oriented execution layer.
+
+Related projects worth knowing:
+
+- [Autodesk Fusion MCP docs](https://help.autodesk.com/view/ADSKMCP/ENU/?guid=ADSKMCP_FusionDesktopMcp_connecting_to_the_fusion_mcp_server_html)
+- [frankhommers/autodesk-fusion-mcp](https://github.com/frankhommers/autodesk-fusion-mcp)
+- [faust-machines/fusion360-mcp-server](https://github.com/faust-machines/fusion360-mcp-server)
+- [JustusBraitinger/FusionMCP](https://github.com/JustusBraitinger/FusionMCP)
+- [ArchimedesCrypto/fusion360-mcp-server](https://github.com/ArchimedesCrypto/fusion360-mcp-server)
+- [ndoo/fusion360-mcp-bridge](https://github.com/ndoo/fusion360-mcp-bridge)
 
 ## Architecture
 
-```
-AI (WorkBuddy / Cursor / Codex)
-    │
-    │  MCP Protocol (HTTP/SSE)
-    ▼
-Fusion 360 MCP Server (frankhommers / AuraFriday / official)
-    │
-    │  execute_python / execute_api_script
-    ▼
-Fusion 360 API (adsk.core / adsk.fusion)
-    │
-    ▼  (uses code from this library)
-3D Model created ✓
+```text
+AI Client
+  -> Brepwright local MCP endpoint
+  -> Fusion Add-in runtime
+  -> Fusion CustomEvent main-thread dispatcher
+  -> direct adsk.core / adsk.fusion API calls
+  -> model + screenshot + export pack + verification result
 ```
 
-## Directory structure
+The default endpoint is:
 
-```
-fusion360-mcp-codebook/
-├── api_docs/          # Fusion 360 API reference & search database
-├── basic_shapes/      # Primitives: cube, cylinder, sphere, torus, cone
-├── features/          # Feature operations: extrude, fillet, chamfer, hole, shell, draft, thread
-├── surfaces/          # Surface operations: loft, sweep, patch, offset, thicken, split
-├── transforms/        # Transforms: move, rotate, mirror, pattern (circular/rectangular)
-├── assembly/          # Assembly: components, joints, contacts
-├── export/            # Export: STEP, STL, IGES, screenshot
-├── LIBRARY.md         # Quick reference index of all functions
-└── README.md          # This file
+```text
+http://127.0.0.1:8766/mcp
 ```
 
-## Code conventions
+Port `8766` avoids common conflicts with Autodesk's `27182` endpoint and other community add-ins that use `8765`.
 
-Each code snippet follows this format:
+## Repository Layout
 
-```python
-# === Function: create_cube ===
-# Description: Create a parametric cube at origin
-# Parameters: width (mm), height (mm), depth (mm)
-# Tested: 2026-06-05 on Fusion 360 v2703.1.11 (Mac)
-# MCP Server: frankhommers/autodesk-fusion-mcp (HTTP :8765)
-# Status: ✓ PASSED
-
-import adsk.core, adsk.fusion
-
-def create_cube(width=10, height=10, depth=10):
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
-
-    sketch = rootComp.sketches.add(rootComp.xYConstructionPlane)
-    sketch.sketchCurves.sketchLines.addTwoPointRectangle(
-        adsk.core.Point3D.create(0, 0, 0),
-        adsk.core.Point3D.create(width, height, 0)
-    )
-
-    profile = sketch.profiles.item(0)
-    extrudeFeats = rootComp.features.extrudeFeatures
-    extInput = extrudeFeats.createInput(profile, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
-    distance = adsk.core.ValueInput.createByReal(depth)
-    extInput.setDistanceExtent(False, distance)
-    return extrudeFeats.add(extInput)
-
-create_cube(10, 10, 10)
+```text
+addin/Brepwright/              Fusion add-in and MCP runtime
+codebook/                      validated Fusion API scripts and reference index
+docs/                          architecture, installation, and verification docs
+scripts/install_addin.py       install helper with dry-run mode
+tests/                         CI-safe tests that do not require Fusion
 ```
 
-## Test status
+## Tool Surface
 
-> Last updated: 2026-06-06 | Fusion 360 v2703.1.11 (Mac, Apple Silicon) | MCP: frankhommers v1.0.0
+Baseline tools include primitives, features, transforms, surfaces, assembly, export, inspection, and `execute_python`.
 
-| Category | Total | Passed | Failed | Untested |
-|----------|-------|--------|--------|----------|
-| Basic shapes | 6 | 6 | 0 | 0 |
-| Features | 10 | 10 | 0 | 0 |
-| Surfaces | 6 | 6 | 0 | 0 |
-| Transforms | 4 | 4 | 0 | 0 |
-| Assembly | 3 | 3 | 0 | 0 |
-| Export | 5 | 5 | 0 | 0 |
-| **Total** | **34** | **34** | **0** | **0** |
+Workflow tools:
 
-> **Torus note**: Use SweepFeatures (NOT RevolveFeatures) to create torus — revolve fails with ASM_PATH_TANGENT error.
+- `create_mounting_plate`
+- `create_enclosure_shell`
+- `create_bracket`
+- `inspect_design`
+- `export_design_pack`
+- `validate_part_for_printing`
 
-## Usage with AI
+System tools:
 
-When using this library with an AI assistant:
+- `ping`
+- `get_runtime_status`
+- `get_active_design_info`
 
-1. AI reads the relevant snippet from the codebook
-2. AI adjusts parameters (dimensions, positions) as needed
-3. AI sends the code via MCP `execute_python` tool
-4. Fusion 360 executes and creates the 3D model
+All user-facing dimensions are in millimeters. Fusion API calls are converted to centimeters internally.
+
+## Quickstart
+
+1. Install Autodesk Fusion.
+2. Install the add-in:
+
+```bash
+python3 scripts/install_addin.py --dry-run
+python3 scripts/install_addin.py
+```
+
+3. In Fusion, open `Utilities -> Add-Ins -> Scripts and Add-Ins`, select `Brepwright`, and run it.
+4. Configure your MCP client:
+
+```json
+{
+  "mcpServers": {
+    "brepwright": {
+      "type": "http",
+      "url": "http://127.0.0.1:8766/mcp"
+    }
+  }
+}
+```
+
+5. Call `ping`, then `get_active_design_info`.
+
+## Verification
+
+CI runs only tests that do not require Fusion:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Live Fusion verification is manual and should cover:
+
+- `ping`
+- `create_cube`
+- `fillet_edge`
+- `create_hole`
+- `inspect_design`
+- `capture_viewport`
+- `export_design_pack`
+
+See [docs/verification-report.zh.md](docs/verification-report.zh.md) for the original Chinese verification notes.
+
+## Security
+
+Brepwright runs locally and can execute Fusion Python through MCP. Keep it bound to `127.0.0.1` and do not expose the endpoint to a network you do not trust. See [SECURITY.md](SECURITY.md).
 
 ## License
 
-MIT License — free to use, modify, and distribute.
+MIT. See [LICENSE](LICENSE).
 
-## Contributing
-
-Contributions welcome! Please ensure:
-- All code is tested on a real Fusion 360 instance
-- Follow the code conventions above
-- Include the test status header comment
+This project includes an adapted standard-library Streamable HTTP MCP runtime inspired by `frankhommers/autodesk-fusion-mcp`; attribution is retained in [NOTICE](NOTICE).

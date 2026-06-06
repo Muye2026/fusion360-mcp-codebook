@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest SchemaVersion="1" ProductType="Managed" ProductVersion="1.0">
+  <Name>Brepwright</Name>
+  <Description>Validated CAD workflows for AI agents in Autodesk Fusion.</Description>
+  <CompanyName>Muye2026</CompanyName>
+  <ApperanceIcon>lib/autodesk.ico</ApperanceIcon>
+</ApplicationManifest>
