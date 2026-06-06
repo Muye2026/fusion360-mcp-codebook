@@ -1,0 +1,13 @@
+[project]
+name = "fusion360-mcp-codebook-server"
+version = "0.1.0"
+description = "Domain-specific MCP Server for Fusion 360 — wraps tested codebook functions as AI-callable tools"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+fusion360-server = "server.main:main"
